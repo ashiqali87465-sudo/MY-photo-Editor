@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Photo Editor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #1e1e1e;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .upload-section {
+            margin-bottom: 20px;
+        }
+        .upload-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .upload-btn:hover {
+            background-color: #0056b3;
+        }
+        .editor {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+        }
+        .controls {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            min-width: 300px;
+        }
+        .controls h2 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        .slider-group {
+            margin-bottom: 15px;
+        }
+        .slider-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .slider {
+            width: 100%;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px;
+            background: #333;
+            outline: none;
+            border-radius: 3px;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #007bff;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #007bff;
+            cursor: pointer;
+            border-radius: 50%;
+            border: none;
+        }
+        .transform-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+        .canvas-container {
+            position: relative;
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #333;
+            border-radius: 5px;
+        }
+        .download-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .download-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .download-btn:hover {
+            background-color: #c82333;
+        }
+        .ad-space {
+            background-color: #333;
+            border: 2px dashed #555;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #aaa;
+        }
+        .ad-space-top {
+            margin-bottom: 20px;
+        }
+        .ad-space-bottom {
+            margin-top: 20px;
+        }
+        @media (max-width: 768px) {
+            .editor {
+                flex-direction: column;
+                align-items: center;
+            }
+            .controls {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Online Photo Editor</h1>
+        <p>Edit your images for free with real-time filters and transformations.</p>
+    </header>
+    
+    <div class="ad-space ad-space-top">
+        <p>Ad Space: Placeholder for HilltopAds or Adsterra Banner</p>
+    </div>
+    
+    <div class="container">
+        <div class="upload-section">
+            <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+            <button class="upload-btn" onclick="document.getElementById('imageUpload').click()">Upload Image</button>
+        </div>
+        
+        <div class="editor">
+            <div class="controls">
+                <h2>Filters</h2>
+                <div class="slider-group">
+                    <label for="brightness">Brightness: <span id="brightnessValue">100</span>%</label>
+                    <input type="range" id="brightness" class="slider" min="0" max="200" value="100">
+                </div>
+                <div class="slider-group">
+                    <label for="saturation">Saturation: <span id="saturationValue">100</span>%</label>
+                    <input type="range" id="saturation" class="slider" min="0" max="200" value="100">
+                </div>
+                <div class="slider-group">
+                    <label for="grayscale">Grayscale: <span id="grayscaleValue">0</span>%</label>
+                    <input type="range" id="grayscale" class="slider" min="0" max="100" value="0">
+                </div>
+                <div class="slider-group">
+                    <label for="invert">Invert: <span id="invertValue">0</span>%</label>
+                    <input type="range" id="invert" class="slider" min="0" max="100" value="0">
+                </div>
+                <div class="slider-group">
+                    <label for="blur">Blur: <span id="blurValue">0</span>px</label>
+                    <input type="range" id="blur" class="slider" min="0" max="20" value="0">
+                </div>
+                
+                <h2>Transformations</h2>
+                <div class="transform-btns">
+                    <button class="btn" id="rotate">Rotate 90°</button>
+                    <button class="btn" id="flipH">Flip Horizontal</button>
+                    <button class="btn" id="flipV">Flip Vertical</button>
+                </div>
+            </div>
+            
+            <div class="canvas-container">
+                <canvas id="canvas"></canvas>
+            </div>
+        </div>
+        
+        <div class="download-section">
+            <button class="download-btn" id="downloadBtn">Download Edited Image</button>
+        </div>
+    </div>
+    
+    <div class="ad-space ad-space-bottom">
+        <p>Ad Space: Placeholder for HilltopAds or Adsterra Banner</p>
+    </div>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let img = new Image();
+        let rotation = 0;
+        let flipH = false;
+        let flipV = false;
+        
+        // Load image
+        document.getElementById('imageUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    img.onload = function() {
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        drawImage();
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Sliders
+        const brightness = document.getElementById('brightness');
+        const saturation = document.getElementById('saturation');
+        const grayscale = document.getElementById('grayscale');
+        const invert = document.getElementById('invert');
+        const blur = document.getElementById('blur');
+        
+        [brightness, saturation, grayscale, invert, blur].forEach(slider => {
+            slider.addEventListener('input', function() {
+                updateValues();
+                drawImage();
+            });
+        });
+        
+        function updateValues() {
+            document.getElementById('brightnessValue').textContent = brightness.value;
+            document.getElementById('saturationValue').textContent = saturation.value;
+            document.getElementById('grayscaleValue').textContent = grayscale.value;
+            document.getElementById('invertValue').textContent = invert.value;
+            document.getElementById('blurValue').textContent = blur.value;
+        }
+        
+        // Transformations
+        document.getElementById('rotate').addEventListener('click', function() {
+            rotation = (rotation + 90) % 360;
+            drawImage();
+        });
+        
+        document.getElementById('flipH').addEventListener('click', function() {
+            flipH = !flipH;
+            drawImage();
+        });
+        
+        document.getElementById('flipV').addEventListener('click', function() {
+            flipV = !flipV;
+            drawImage();
+        });
+        
+        // Draw image with filters and transformations
+        function drawImage() {
+            if (!img.src) return;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.save();
+            
+            // Apply transformations
+            ctx.translate(canvas.width / 2, canvas.height / 2);
+            if (rotation) ctx.rotate(rotation * Math.PI / 180);
+            if (flipH) ctx.scale(-1, 1);
+            if (flipV) ctx.scale(1, -1);
+            ctx.translate(-canvas.width / 2, -canvas.height / 2);
+            
+            // Apply filters
+            ctx.filter = `brightness(${brightness.value}%) saturate(${saturation.value}%) grayscale(${grayscale.value}%) invert(${invert.value}%) blur(${blur.value}px)`;
+            
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            
+            ctx.restore();
+        }
+        
+        // Download
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            const link = document.createElement('a');
+            link.download = 'edited-image.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+    </script>
+</body>
+</html>
